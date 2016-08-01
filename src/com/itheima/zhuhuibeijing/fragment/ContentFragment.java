@@ -7,8 +7,7 @@ import android.view.View;
 public class ContentFragment extends BaseFragment {
 
 	@Override
-	public View initData() {
-		return null;
+	public void initData() {
 	}
 
 	@Override

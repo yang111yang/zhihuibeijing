@@ -38,7 +38,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 
 	//初始化数据，必须有子类实现
-	public abstract View initData();
+	public abstract void initData();
 
 	//初始化布局，必须有子类实现
 	public abstract View initView();
