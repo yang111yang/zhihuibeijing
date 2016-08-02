@@ -1,7 +1,10 @@
 package com.itheima.zhuhuibeijing.base.impl;
 
+import java.net.CacheRequest;
+
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +14,7 @@ import com.google.gson.Gson;
 import com.itheima.zhuhuibeijing.base.BasePager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
+import com.itheima.zhuhuibeijing.utils.CacheUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -48,9 +52,18 @@ public class NewsCenterPager extends BasePager {
 		// 显示菜单按钮
 		btnMenu.setVisibility(View.VISIBLE);
 
+		// 先判断有没有缓存，如果有的话，加载缓存
+		String cache = CacheUtils.getCache(GlobalConstants.CATEGORY_URL,
+				mActivity);
+		if (!TextUtils.isEmpty(cache)) {
+			System.out.println("发现缓存了...");
+			processData(cache);
+		} 
+
 		// 请求服务器，获取数据
 		// 开源框架：XUtils
 		getDataFromServer();
+
 	}
 
 	/**
@@ -69,6 +82,9 @@ public class NewsCenterPager extends BasePager {
 
 						// Gson
 						processData(result);
+						
+						//写缓存
+						CacheUtils.setCache(GlobalConstants.CATEGORY_URL, result, mActivity);
 					}
 
 					@Override
