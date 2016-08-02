@@ -13,7 +13,7 @@ import com.itheima.zhuhuibeijing.R;
  */
 public class BasePager {
 	
-	public Activity mActivity;
+	public Activity mActivity;//这个activity就是MainActivity
 	public TextView tvTitle;
 	public ImageButton btnMenu;
 	public FrameLayout flContent;//空的帧布局对象，需要动态添加数据

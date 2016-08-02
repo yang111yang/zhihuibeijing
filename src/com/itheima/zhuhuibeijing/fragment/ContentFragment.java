@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
+import com.itheima.zhuhuibeijing.MainActivity;
 import com.itheima.zhuhuibeijing.NoScrollViewPager;
 import com.itheima.zhuhuibeijing.R;
 import com.itheima.zhuhuibeijing.base.BasePager;
@@ -18,6 +19,7 @@ import com.itheima.zhuhuibeijing.base.impl.HomePager;
 import com.itheima.zhuhuibeijing.base.impl.NewsCenterPager;
 import com.itheima.zhuhuibeijing.base.impl.SettingPager;
 import com.itheima.zhuhuibeijing.base.impl.SmartServicePager;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class ContentFragment extends BaseFragment {
 
@@ -43,6 +45,14 @@ public class ContentFragment extends BaseFragment {
 			@Override
 			public void onPageSelected(int position) {
 				mPagers.get(position).initData();
+				
+				if (position == 0 || position == 4) {
+					//首页和设置页面要禁用侧边栏
+					setSlidingMenuEnable(false);
+				}else{
+					//其他页面开启侧边栏
+					setSlidingMenuEnable(true);
+				}
 			}
 			
 			@Override
@@ -58,6 +68,8 @@ public class ContentFragment extends BaseFragment {
 		
 		//手动加载第一页数据
 		mPagers.get(0).initData();
+		//首页禁用侧边栏
+		setSlidingMenuEnable(false);
 		
 		
 		//底栏标签切换监听
@@ -91,6 +103,21 @@ public class ContentFragment extends BaseFragment {
 			}
 		});
 		
+	}
+
+	/**
+	 * 开启或禁用侧边栏
+	 * @param enable
+	 */
+	protected void setSlidingMenuEnable(boolean enable) {
+		//获取侧边栏对象
+		MainActivity mainUI = (MainActivity) mActivity;
+		SlidingMenu slidingMenu = mainUI.getSlidingMenu();
+		if (enable) {
+			slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		}else{
+			slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+		}
 	}
 
 	@Override

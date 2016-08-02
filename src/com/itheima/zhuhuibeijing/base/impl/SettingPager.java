@@ -3,6 +3,7 @@ package com.itheima.zhuhuibeijing.base.impl;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.itheima.zhuhuibeijing.base.BasePager;
@@ -28,8 +29,11 @@ public class SettingPager extends BasePager {
 		
 		flContent.addView(view);
 		
-//		//修改页面标题
-//		tvTitle.setText("设置");
+		//修改页面标题
+		tvTitle.setText("设置");
+		
+		//隐藏菜单按钮
+		btnMenu.setVisibility(View.GONE);
 	}
 
 }

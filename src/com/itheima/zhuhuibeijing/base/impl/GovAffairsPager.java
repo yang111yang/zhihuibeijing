@@ -3,6 +3,7 @@ package com.itheima.zhuhuibeijing.base.impl;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.itheima.zhuhuibeijing.base.BasePager;
@@ -30,6 +31,10 @@ public class GovAffairsPager extends BasePager {
 		
 		//修改页面标题
 		tvTitle.setText("人口");
+		
+		//显示菜单按钮
+		btnMenu.setVisibility(View.VISIBLE);
+
 		
 	}
 
