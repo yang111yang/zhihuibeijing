@@ -1,7 +1,5 @@
 package com.itheima.zhuhuibeijing.base.impl;
 
-import java.net.CacheRequest;
-
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -11,8 +9,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.itheima.zhuhuibeijing.MainActivity;
 import com.itheima.zhuhuibeijing.base.BasePager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu;
+import com.itheima.zhuhuibeijing.fragment.LeftMenuFragment;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -106,6 +106,14 @@ public class NewsCenterPager extends BasePager {
 		Gson gson = new Gson();
 		data = gson.fromJson(json, NewsMenu.class);
 		System.out.println("解析结果：" + data);
+		
+		//获取侧边栏对象
+		MainActivity mainUI = (MainActivity) mActivity;
+		LeftMenuFragment fragment = mainUI.getLeftMenuFragment();
+		
+		//给侧边栏设置数据
+		fragment.setMenuData(data.data);
+		
 	}
 
 }

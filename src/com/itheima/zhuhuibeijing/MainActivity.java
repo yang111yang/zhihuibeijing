@@ -1,6 +1,7 @@
 package com.itheima.zhuhuibeijing;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
@@ -50,4 +51,17 @@ public class MainActivity extends SlidingFragmentActivity {
 //		Fragment content = fm.findFragmentByTag(TAG_CONTENT);
 		
 	}
+	
+	//获取侧边栏fragment对象
+	public LeftMenuFragment getLeftMenuFragment(){
+		FragmentManager fm = getSupportFragmentManager();
+		LeftMenuFragment fragment = (LeftMenuFragment) fm.findFragmentByTag(TAG_LEFT_MENU);
+		return fragment;
+	}
+	
+	
+	
+	
+	
+	
 }
