@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -37,6 +38,27 @@ public class ContentFragment extends BaseFragment {
 		mPagers.add(new SettingPager(mActivity));
 		
 		mViewPager.setAdapter(new ContentAdapter());
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			@Override
+			public void onPageSelected(int position) {
+				mPagers.get(position).initData();
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				
+			}
+		});
+		
+		//手动加载第一页数据
+		mPagers.get(0).initData();
+		
 		
 		//底栏标签切换监听
 		rgGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -46,23 +68,24 @@ public class ContentFragment extends BaseFragment {
 				switch (checkedId) {
 				case R.id.rb_home:
 					//首页
-					mViewPager.setCurrentItem(0);
+//					mViewPager.setCurrentItem(0);
+					mViewPager.setCurrentItem(0, false);//参数2：表示是否具有滑动动画
 					break;
 				case R.id.rb_news:
 					//新闻中心
-					mViewPager.setCurrentItem(1);
+					mViewPager.setCurrentItem(1, false);
 					break;
 				case R.id.rb_smart:
 					//智慧服务
-					mViewPager.setCurrentItem(2);
+					mViewPager.setCurrentItem(2, false);
 					break;
 				case R.id.rb_gov:
 					//政务
-					mViewPager.setCurrentItem(3);
+					mViewPager.setCurrentItem(3, false);
 					break;
 				case R.id.rb_setting:
 					//设置
-					mViewPager.setCurrentItem(4);
+					mViewPager.setCurrentItem(4, false);
 					break;
 				}
 			}
@@ -96,7 +119,7 @@ public class ContentFragment extends BaseFragment {
 			BasePager pager = mPagers.get(position);
 			View view = pager.mRootView;//获取当前页面对象的布局
 			
-			pager.initData();//初始化数据
+			//pager.initData();//初始化数据,ViewPager会默认加载下一个页面，为了节省流量和性能，不要在此处调用初始化方法
 			
 			container.addView(view);
 			
