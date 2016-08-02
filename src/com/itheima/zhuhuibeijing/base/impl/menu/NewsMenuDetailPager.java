@@ -13,6 +13,7 @@ import com.itheima.zhuhuibeijing.base.BaseMenuDetailPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsTabData;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.viewpagerindicator.TabPageIndicator;
 
 /**
  * 菜单详情页--新闻
@@ -24,6 +25,9 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
 
 	@ViewInject(R.id.vp_news_menu_detail)
 	private ViewPager mViewPager;
+	
+	@ViewInject(R.id.indicator)
+	private TabPageIndicator mIndicator;
 	
 	private ArrayList<NewsTabData> mTabData;//页签网络数据
 	
@@ -54,10 +58,20 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
 		}
 		
 		mViewPager.setAdapter(new NewsMenuDetailAdapter());
+		
+		mIndicator.setViewPager(mViewPager);//将ViewPager和指示器绑定在一起。注意：必须在ViewPager设置完数据之后再绑定
+		
 	}
 	
 	class NewsMenuDetailAdapter extends PagerAdapter {
 
+		//指定指示器的标题
+		@Override
+		public CharSequence getPageTitle(int position) {
+			NewsTabData data = mTabData.get(position);
+			return data.title;
+		}
+		
 		@Override
 		public int getCount() {
 			return mPagers.size();

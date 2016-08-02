@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="src" path="/SlidingMenuLibrary"/>
 	<classpathentry exported="true" kind="lib" path="/SlidingMenuLibrary/libs/android-support-v4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gson-2.3.1.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
