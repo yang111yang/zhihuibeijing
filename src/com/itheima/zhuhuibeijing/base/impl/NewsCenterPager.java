@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.itheima.zhuhuibeijing.base.BasePager;
+import com.itheima.zhuhuibeijing.domain.NewsMenu;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -22,6 +24,8 @@ import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
  * @date 2016-8-1下午10:52:58
  */
 public class NewsCenterPager extends BasePager {
+
+	private NewsMenu data;
 
 	public NewsCenterPager(Activity activity) {
 		super(activity);
@@ -62,16 +66,30 @@ public class NewsCenterPager extends BasePager {
 						// 请求成功
 						String result = responseInfo.result;
 						System.out.println("服务器返回的结果：" + result);
+
+						// Gson
+						processData(result);
 					}
 
 					@Override
 					public void onFailure(HttpException error, String msg) {
 						// 请求失败
 						error.printStackTrace();
-						Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
+						Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT)
+								.show();
 					}
 				});
 
+	}
+
+	/**
+	 * 解析数据
+	 */
+	protected void processData(String json) {
+		// Gson：Google Json
+		Gson gson = new Gson();
+		data = gson.fromJson(json, NewsMenu.class);
+		System.out.println("解析结果：" + data);
 	}
 
 }
