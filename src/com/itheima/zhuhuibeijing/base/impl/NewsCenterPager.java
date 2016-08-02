@@ -1,5 +1,7 @@
 package com.itheima.zhuhuibeijing.base.impl;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -10,7 +12,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.itheima.zhuhuibeijing.MainActivity;
+import com.itheima.zhuhuibeijing.base.BaseMenuDetailPager;
 import com.itheima.zhuhuibeijing.base.BasePager;
+import com.itheima.zhuhuibeijing.base.impl.menu.InteractMenuDetailPager;
+import com.itheima.zhuhuibeijing.base.impl.menu.NewsMenuDetailPager;
+import com.itheima.zhuhuibeijing.base.impl.menu.PhotosMenuDetailPager;
+import com.itheima.zhuhuibeijing.base.impl.menu.TopicMenuDetailPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu;
 import com.itheima.zhuhuibeijing.fragment.LeftMenuFragment;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
@@ -29,7 +36,9 @@ import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
  */
 public class NewsCenterPager extends BasePager {
 
-	private NewsMenu data;
+	private ArrayList<BaseMenuDetailPager> mMenuDetailPagers;
+	
+	private NewsMenu mNewsData;//分类信息网络数据
 
 	public NewsCenterPager(Activity activity) {
 		super(activity);
@@ -38,13 +47,13 @@ public class NewsCenterPager extends BasePager {
 	@Override
 	public void initData() {
 		// 要给帧布局填充布局对象
-		TextView view = new TextView(mActivity);
-		view.setText("新闻中心");
-		view.setTextColor(Color.RED);
-		view.setTextSize(22);
-		view.setGravity(Gravity.CENTER);
-
-		flContent.addView(view);
+//		TextView view = new TextView(mActivity);
+//		view.setText("新闻中心");
+//		view.setTextColor(Color.RED);
+//		view.setTextSize(22);
+//		view.setGravity(Gravity.CENTER);
+//
+//		flContent.addView(view);
 
 		// 修改页面标题
 		tvTitle.setText("新闻");
@@ -104,16 +113,46 @@ public class NewsCenterPager extends BasePager {
 	protected void processData(String json) {
 		// Gson：Google Json
 		Gson gson = new Gson();
-		data = gson.fromJson(json, NewsMenu.class);
-		System.out.println("解析结果：" + data);
+		mNewsData = gson.fromJson(json, NewsMenu.class);
+		System.out.println("解析结果：" + mNewsData);
 		
 		//获取侧边栏对象
 		MainActivity mainUI = (MainActivity) mActivity;
 		LeftMenuFragment fragment = mainUI.getLeftMenuFragment();
 		
 		//给侧边栏设置数据
-		fragment.setMenuData(data.data);
+		fragment.setMenuData(mNewsData.data);
 		
+		//初始化4个菜单详情页
+		mMenuDetailPagers = new ArrayList<BaseMenuDetailPager>();
+		mMenuDetailPagers.add(new NewsMenuDetailPager(mActivity));
+		mMenuDetailPagers.add(new TopicMenuDetailPager(mActivity));
+		mMenuDetailPagers.add(new PhotosMenuDetailPager(mActivity));
+		mMenuDetailPagers.add(new InteractMenuDetailPager(mActivity));
+		
+		setCurrentDetailPager(0);//将新闻菜单详情页设置为默认页面
 	}
+	
+	/**
+	 * 设置菜单详情页
+	 */
+	public void setCurrentDetailPager(int position){
+		//重新给FrameLayout添加内容
+		BaseMenuDetailPager pager = mMenuDetailPagers.get(position);//获取当前应该显示的页面
+		View view = pager.mRootView;//获取跟布局
+		
+		//清除之前旧的布局
+		flContent.removeAllViews();
+		
+		flContent.addView(view);
+		
+		//初始化页面数据
+		pager.initData();
+		
+		//更新标题
+		tvTitle.setText(mNewsData.data.get(position).title);
+	}
+	
+	
 
 }

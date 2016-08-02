@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.itheima.zhuhuibeijing.MainActivity;
 import com.itheima.zhuhuibeijing.R;
+import com.itheima.zhuhuibeijing.base.impl.NewsCenterPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsMenuData;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
@@ -42,6 +43,9 @@ public class LeftMenuFragment extends BaseFragment {
 	
 	//给侧边栏设置数据
 	public void setMenuData(ArrayList<NewsMenuData> data){
+		
+		mCurrentPos = 0;//当前选中的位置归零
+		
 		//更新页面
 		mNewsMenuData = data;
 		mAdapter = new LeftMenuAdapter();
@@ -57,8 +61,27 @@ public class LeftMenuFragment extends BaseFragment {
 				
 				//收起侧边栏
 				toggle();
+				
+				//侧边栏点击之后，要修改新闻中心得FrameLayout的内容
+				setCurrentDetailPager(position);
 			}
 		});
+		
+	}
+
+	/**
+	 * 设置当前菜单详情页
+	 * @param position
+	 */
+	protected void setCurrentDetailPager(int position) {
+		// 获取新闻中心的对象
+		MainActivity mainUI = (MainActivity) mActivity;
+		//获取ContentFragment
+		ContentFragment fragment = mainUI.getContentFragment();
+		//获取NewsCenterPager
+		NewsCenterPager newsCenterPager = fragment.getNewsCenterPager();
+		//修改新闻中心FrameLayout
+		newsCenterPager.setCurrentDetailPager(position);
 		
 	}
 
