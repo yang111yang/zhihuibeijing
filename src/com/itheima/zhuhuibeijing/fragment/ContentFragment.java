@@ -11,7 +11,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.itheima.zhuhuibeijing.MainActivity;
-import com.itheima.zhuhuibeijing.NoScrollViewPager;
 import com.itheima.zhuhuibeijing.R;
 import com.itheima.zhuhuibeijing.base.BasePager;
 import com.itheima.zhuhuibeijing.base.impl.GovAffairsPager;
@@ -19,6 +18,7 @@ import com.itheima.zhuhuibeijing.base.impl.HomePager;
 import com.itheima.zhuhuibeijing.base.impl.NewsCenterPager;
 import com.itheima.zhuhuibeijing.base.impl.SettingPager;
 import com.itheima.zhuhuibeijing.base.impl.SmartServicePager;
+import com.itheima.zhuhuibeijing.view.NoScrollViewPager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class ContentFragment extends BaseFragment {

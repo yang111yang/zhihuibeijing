@@ -1,4 +1,4 @@
-package com.itheima.zhuhuibeijing;
+package com.itheima.zhuhuibeijing.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -17,6 +17,12 @@ public class NoScrollViewPager extends ViewPager {
 
 	public NoScrollViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
+	}
+	
+	//事件拦截
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent arg0) {
+		return false;//不拦截子控件的事件
 	}
 	
 	@Override
