@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.itheima.zhuhuibeijing.MainActivity;
 import com.itheima.zhuhuibeijing.R;
 import com.itheima.zhuhuibeijing.base.BaseMenuDetailPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsTabData;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.viewpagerindicator.TabPageIndicator;
@@ -21,7 +24,7 @@ import com.viewpagerindicator.TabPageIndicator;
  * @author 刘建阳
  * @date 创建时间：2016-8-2 下午3:00:52
  */
-public class NewsMenuDetailPager extends BaseMenuDetailPager {
+public class NewsMenuDetailPager extends BaseMenuDetailPager implements OnPageChangeListener {
 
 	@ViewInject(R.id.vp_news_menu_detail)
 	private ViewPager mViewPager;
@@ -61,6 +64,8 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
 		
 		mIndicator.setViewPager(mViewPager);//将ViewPager和指示器绑定在一起。注意：必须在ViewPager设置完数据之后再绑定
 		
+//		mViewPager.setOnPageChangeListener(this);
+		mIndicator.setOnPageChangeListener(this);//此处必须给指示器设置页面监听
 	}
 	
 	class NewsMenuDetailAdapter extends PagerAdapter {
@@ -99,4 +104,44 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager {
 
 	}
 
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		System.out.println("当前位置："+position);
+		
+		if (position == 0) {
+			//首页和设置页面要禁用侧边栏
+			setSlidingMenuEnable(true);
+		}else{
+			//其他页面开启侧边栏
+			setSlidingMenuEnable(false);
+		}
+	}
+
+	/**
+	 * 开启或禁用侧边栏
+	 * @param enable
+	 */
+	protected void setSlidingMenuEnable(boolean enable) {
+		//获取侧边栏对象
+		MainActivity mainUI = (MainActivity) mActivity;
+		SlidingMenu slidingMenu = mainUI.getSlidingMenu();
+		if (enable) {
+			slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		}else{
+			slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+		}
+	}
+
+	
+	
 }

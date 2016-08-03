@@ -1,10 +1,10 @@
 package com.itheima.zhuhuibeijing;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
+
 import com.itheima.zhuhuibeijing.fragment.ContentFragment;
 import com.itheima.zhuhuibeijing.fragment.LeftMenuFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
