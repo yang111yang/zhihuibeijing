@@ -46,8 +46,9 @@
     </FrameLayout>
 
     <ListView
-        android:id="@+id/lv_list"
+        android:id="@+id/lv_list_news"
         android:layout_width="match_parent"
+        android:cacheColorHint="#fff"
         android:layout_height="0dp"
         android:layout_weight="1" >
     </ListView>
