@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +40,19 @@ import com.lidroid.xutils.view.annotation.ViewInject;
 public class TabDetailPager extends BaseMenuDetailPager {
 
 	private NewsTabData mTabData;// 单个页签的网络数据
+	
 	private TextView view;
 
 	@ViewInject(R.id.vp_top_news)
 	private TopNewsViewPager mViewPager;
+	
+	@ViewInject(R.id.tv_title)
+	private TextView tvTitle;
+	
 	private String mUrl;
+	
 	private ArrayList<TopNews> mTopnews;
+	
 	private TopNewsAdapter topNewsAdapter;
 	
 	public TabDetailPager(Activity activity, NewsTabData newsTabData) {
@@ -116,6 +124,28 @@ public class TabDetailPager extends BaseMenuDetailPager {
 		if (mTopnews != null) {
 			topNewsAdapter = new TopNewsAdapter();
 			mViewPager.setAdapter(topNewsAdapter);
+			
+			mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+				
+				@Override
+				public void onPageSelected(int arg0) {
+					TopNews topNews = mTopnews.get(arg0);
+					tvTitle.setText(topNews.title);
+				}
+				
+				@Override
+				public void onPageScrolled(int arg0, float arg1, int arg2) {
+					
+				}
+				
+				@Override
+				public void onPageScrollStateChanged(int arg0) {
+					
+				}
+			});
+			
+			//更新第一个头条新闻标题
+			tvTitle.setText(mTopnews.get(0).title);
 		}
 		
 	}
@@ -127,6 +157,8 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 		public TopNewsAdapter(){
 			mBitmapUtils = new BitmapUtils(mActivity);
+			
+			mBitmapUtils.configDefaultLoadingImage(R.drawable.topnews_item_default);
 		}
 		
 		
