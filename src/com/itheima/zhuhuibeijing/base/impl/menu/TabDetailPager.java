@@ -30,6 +30,7 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest.HttpMethod;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.viewpagerindicator.CirclePageIndicator;
 
 /**
  * 页签页面对象
@@ -48,6 +49,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 	
 	@ViewInject(R.id.tv_title)
 	private TextView tvTitle;
+	
+	@ViewInject(R.id.indicator)
+	private CirclePageIndicator indicator;
 	
 	private String mUrl;
 	
@@ -125,7 +129,11 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			topNewsAdapter = new TopNewsAdapter();
 			mViewPager.setAdapter(topNewsAdapter);
 			
-			mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+			indicator.setViewPager(mViewPager);
+	        indicator.setSnap(true);//快照方式展示
+			
+	        //事件要设置给indicator
+	        indicator.setOnPageChangeListener(new OnPageChangeListener() {
 				
 				@Override
 				public void onPageSelected(int arg0) {
@@ -146,6 +154,8 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			
 			//更新第一个头条新闻标题
 			tvTitle.setText(mTopnews.get(0).title);
+			
+			indicator.onPageSelected(0);//默认让第一个选中(解决页面销毁后重新初始化时，Indicator仍然保留上次位置的bug)
 		}
 		
 	}
