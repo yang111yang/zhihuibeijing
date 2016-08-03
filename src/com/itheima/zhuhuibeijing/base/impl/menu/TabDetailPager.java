@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.itheima.zhuhuibeijing.R;
 import com.itheima.zhuhuibeijing.base.BaseMenuDetailPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsTabData;
 import com.itheima.zhuhuibeijing.domain.NewsTabBean;
+import com.itheima.zhuhuibeijing.domain.NewsTabBean.NewsData;
 import com.itheima.zhuhuibeijing.domain.NewsTabBean.TopNews;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
@@ -53,11 +56,18 @@ public class TabDetailPager extends BaseMenuDetailPager {
 	@ViewInject(R.id.indicator)
 	private CirclePageIndicator indicator;
 	
+	@ViewInject(R.id.lv_list)
+	private ListView lvList;
+	
 	private String mUrl;
 	
 	private ArrayList<TopNews> mTopnews;
 	
 	private TopNewsAdapter topNewsAdapter;
+
+	private ArrayList<NewsData> mNewsList;
+
+	private NewsAdapter mNewsAdapter;
 	
 	public TabDetailPager(Activity activity, NewsTabData newsTabData) {
 		super(activity);
@@ -158,6 +168,13 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			indicator.onPageSelected(0);//默认让第一个选中(解决页面销毁后重新初始化时，Indicator仍然保留上次位置的bug)
 		}
 		
+		//列表新闻
+		mNewsList = newsTabBean.data.news;
+		if (mNewsList != null) {
+			mNewsAdapter = new NewsAdapter();
+			lvList.setAdapter(mNewsAdapter);
+		}
+		
 	}
 
 	//头条新闻适配器
@@ -206,5 +223,35 @@ public class TabDetailPager extends BaseMenuDetailPager {
 		
 		
 	}
+	
+	class NewsAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			return mNewsList.size();
+		}
+
+		@Override
+		public NewsData getItem(int position) {
+			return mNewsList.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			
+			if (convertView ==null) {
+				
+			}
+			
+			return null;
+		}
+		
+	}
+	
 	
 }
