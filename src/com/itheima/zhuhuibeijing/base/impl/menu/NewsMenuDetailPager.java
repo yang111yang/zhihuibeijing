@@ -16,6 +16,7 @@ import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsTabData;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
+import com.lidroid.xutils.view.annotation.event.OnClick;
 import com.viewpagerindicator.TabPageIndicator;
 
 /**
@@ -31,6 +32,8 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager implements OnPageCh
 	
 	@ViewInject(R.id.indicator)
 	private TabPageIndicator mIndicator;
+	
+	
 	
 	private ArrayList<NewsTabData> mTabData;//页签网络数据
 	
@@ -142,6 +145,12 @@ public class NewsMenuDetailPager extends BaseMenuDetailPager implements OnPageCh
 		}
 	}
 
-	
+	@OnClick(R.id.btn_next)
+	public void nextPage(View view){
+		//跳到下一个页面
+		int currentItem = mViewPager.getCurrentItem();
+		currentItem ++;
+		mViewPager.setCurrentItem(currentItem);
+	}
 	
 }
