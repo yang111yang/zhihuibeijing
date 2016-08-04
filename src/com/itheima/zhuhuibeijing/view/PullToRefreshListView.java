@@ -1,5 +1,8 @@
 package com.itheima.zhuhuibeijing.view;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -62,7 +65,7 @@ public class PullToRefreshListView extends ListView {
 		this.addHeaderView(mHeaderView);
 
 		tvTitle = (TextView) mHeaderView.findViewById(R.id.tv_title);
-		tvDate = (TextView) mHeaderView.findViewById(R.id.tv_date);
+		tvDate = (TextView) mHeaderView.findViewById(R.id.tv_time);
 		ivArrow = (ImageView) mHeaderView.findViewById(R.id.iv_arrow);
 		pbProgress = (ProgressBar) mHeaderView.findViewById(R.id.pb_loading);
 
@@ -73,7 +76,7 @@ public class PullToRefreshListView extends ListView {
 		
 		initAnim();
 		
-
+		setCurrentTime();
 	}
 
 	/**
@@ -91,6 +94,16 @@ public class PullToRefreshListView extends ListView {
 		animDown.setDuration(200);
 		animDown.setFillAfter(true);
 	}
+	
+	//设置刷新时间
+	private void setCurrentTime(){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String time = format.format(new Date());
+		tvDate.setText(time);
+	}
+	
+	
+	
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
@@ -194,13 +207,16 @@ public class PullToRefreshListView extends ListView {
 	/**
 	 * 刷新结束，收起控件
 	 */
-	public void onRefreshComplete(){
+	public void onRefreshComplete(boolean success){
 		mHeaderView.setPadding(0, -mHeaderViewHeight, 0, 0);
 		
 		mCurrentState = STATE_PULL_TO_REFRESH; 	
 		tvTitle.setText("下拉刷新");
 		pbProgress.setVisibility(View.INVISIBLE);
 		ivArrow.setVisibility(View.VISIBLE);
+		if (success) {
+			setCurrentTime();
+		}
 	}
 	
 	//3.定义成员变量，接收监听对象
