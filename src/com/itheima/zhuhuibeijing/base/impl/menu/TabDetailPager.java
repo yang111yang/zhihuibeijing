@@ -24,6 +24,8 @@ import com.itheima.zhuhuibeijing.domain.NewsTabBean.NewsData;
 import com.itheima.zhuhuibeijing.domain.NewsTabBean.TopNews;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
+import com.itheima.zhuhuibeijing.view.PullToRefreshListView;
+import com.itheima.zhuhuibeijing.view.PullToRefreshListView.onRefreshLister;
 import com.itheima.zhuhuibeijing.view.TopNewsViewPager;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -55,7 +57,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 	private CirclePageIndicator indicator;
 
 	@ViewInject(R.id.lv_list_news)
-	private ListView lvListNews;
+	private PullToRefreshListView lvListNews;
 
 	private String mUrl;
 
@@ -95,6 +97,17 @@ public class TabDetailPager extends BaseMenuDetailPager {
 		ViewUtils.inject(this,mHeaderView);//此处必须把头布局也注入
 		lvListNews.addHeaderView(mHeaderView);
 		
+		//5.前端界面设置回调
+		lvListNews.setOnRefreshLister(new onRefreshLister() {
+			
+			@Override
+			public void onRefresh() {
+				//刷新数据
+				getDataFromServer();
+			}
+		});
+		
+		
 		return view;
 	}
 
@@ -124,6 +137,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 				// 写缓存
 				CacheUtils.setCache(mUrl, result, mActivity);
+				
+				//收起下拉刷新控件
+				lvListNews.onRefreshComplete();
 			}
 
 			@Override
@@ -131,6 +147,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				// 请求失败
 				error.printStackTrace();
 				Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
+				
+				//收起下拉刷新控件
+				lvListNews.onRefreshComplete();
 			}
 		});
 	}
