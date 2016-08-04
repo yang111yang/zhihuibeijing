@@ -32,7 +32,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		
 		SlidingMenu slidingMenu = getSlidingMenu();
 		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		slidingMenu.setBehindOffset(300);
+		slidingMenu.setBehindOffset(200);
 		
 		initFragment();
 		
