@@ -69,6 +69,10 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 	private NewsAdapter mNewsAdapter;
 
+	private String moreUrl;
+
+	private String mMoreUrl;//下一页数据连接
+
 	public TabDetailPager(Activity activity, NewsTabData newsTabData) {
 		super(activity);
 		mTabData = newsTabData;
@@ -105,6 +109,20 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				//刷新数据
 				getDataFromServer();
 			}
+
+			@Override
+			public void onLoadMore() {
+				//判断是否有下一页数据
+				if (moreUrl != null) {
+					//有下一页
+					getMoreDataFromServer();
+				}else{
+					//没有下一页
+					Toast.makeText(mActivity, "没有更多数据了", Toast.LENGTH_SHORT).show();
+					lvListNews.onRefreshComplete(false);//没有数据时，也要收起控件
+				}
+				
+			}
 		});
 		
 		
@@ -117,7 +135,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 		String cache = CacheUtils.getCache(mUrl, mActivity);
 		if (!TextUtils.isEmpty(cache)) {
-			processData(cache);
+			processData(cache,false);
 		}
 
 		getDataFromServer();
@@ -133,7 +151,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				String result = responseInfo.result;
 
 				// Gson
-				processData(result);
+				processData(result,false);
 
 				// 写缓存
 				CacheUtils.setCache(mUrl, result, mActivity);
@@ -153,52 +171,100 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			}
 		});
 	}
+	
+	/**
+	 * 加载下一页数据
+	 */
+	protected void getMoreDataFromServer() {
+		HttpUtils utils = new HttpUtils();
+		utils.send(HttpMethod.GET, mMoreUrl, new RequestCallBack<String>() {
 
-	protected void processData(String json) {
+			@Override
+			public void onSuccess(ResponseInfo<String> responseInfo) {
+				// 请求成功
+				String result = responseInfo.result;
+
+				// Gson
+				processData(result,true);
+
+				//收起下拉刷新控件
+				lvListNews.onRefreshComplete(true);
+			}
+
+			@Override
+			public void onFailure(HttpException error, String msg) {
+				// 请求失败
+				error.printStackTrace();
+				Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
+				
+				//收起下拉刷新控件
+				lvListNews.onRefreshComplete(false);
+			}
+		});
+	}
+
+	protected void processData(String json, boolean isMore) {
 		Gson gson = new Gson();
 		NewsTabBean newsTabBean = gson.fromJson(json, NewsTabBean.class);
 
-		// 头条新闻填充数据
-		mTopnews = newsTabBean.data.topnews;
-
-		if (mTopnews != null) {
-			topNewsAdapter = new TopNewsAdapter();
-			mViewPager.setAdapter(topNewsAdapter);
-
-			indicator.setViewPager(mViewPager);
-			indicator.setSnap(true);// 快照方式展示
-
-			// 事件要设置给indicator
-			indicator.setOnPageChangeListener(new OnPageChangeListener() {
-
-				@Override
-				public void onPageSelected(int arg0) {
-					TopNews topNews = mTopnews.get(arg0);
-					tvTitle.setText(topNews.title);
-				}
-
-				@Override
-				public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-				}
-
-				@Override
-				public void onPageScrollStateChanged(int arg0) {
-					
-				}
-			});
-
-			// 更新第一个头条新闻标题
-			tvTitle.setText(mTopnews.get(0).title);
-
-			indicator.onPageSelected(0);// 默认让第一个选中(解决页面销毁后重新初始化时，Indicator仍然保留上次位置的bug)
+		moreUrl = newsTabBean.data.more;
+		if (!TextUtils.isEmpty(mUrl)) {
+			mMoreUrl = GlobalConstants.SERVER_URL + moreUrl;
+		} else {
+			moreUrl = null;
 		}
-
-		// 列表新闻
-		mNewsList = newsTabBean.data.news;
-		if (mNewsList != null) {
-			mNewsAdapter = new NewsAdapter();
-			lvListNews.setAdapter(mNewsAdapter);
+		
+		if (!isMore) {
+			
+			// 头条新闻填充数据
+			mTopnews = newsTabBean.data.topnews;
+			
+			if (mTopnews != null) {
+				topNewsAdapter = new TopNewsAdapter();
+				mViewPager.setAdapter(topNewsAdapter);
+				
+				indicator.setViewPager(mViewPager);
+				indicator.setSnap(true);// 快照方式展示
+				
+				// 事件要设置给indicator
+				indicator.setOnPageChangeListener(new OnPageChangeListener() {
+					
+					@Override
+					public void onPageSelected(int arg0) {
+						TopNews topNews = mTopnews.get(arg0);
+						tvTitle.setText(topNews.title);
+					}
+					
+					@Override
+					public void onPageScrolled(int arg0, float arg1, int arg2) {
+						
+					}
+					
+					@Override
+					public void onPageScrollStateChanged(int arg0) {
+						
+					}
+				});
+				
+				// 更新第一个头条新闻标题
+				tvTitle.setText(mTopnews.get(0).title);
+				
+				indicator.onPageSelected(0);// 默认让第一个选中(解决页面销毁后重新初始化时，Indicator仍然保留上次位置的bug)
+			}
+			
+			// 列表新闻
+			mNewsList = newsTabBean.data.news;
+			if (mNewsList != null) {
+				mNewsAdapter = new NewsAdapter();
+				lvListNews.setAdapter(mNewsAdapter);
+			}
+		}else{
+			//加载更多数据
+			ArrayList<NewsData> moreNews = newsTabBean.data.news;
+			mNewsList.addAll(moreNews);//将数据追加到原来的集合中
+			
+			//刷新listview
+			mNewsAdapter.notifyDataSetChanged();
 		}
 
 	}
