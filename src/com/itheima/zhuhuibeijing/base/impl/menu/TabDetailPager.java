@@ -90,6 +90,10 @@ public class TabDetailPager extends BaseMenuDetailPager {
 //		ViewUtils.inject(this, mHeaderView);// 此处必须将头布局也注入
 //		lvListNews.addHeaderView(mHeaderView);
 		
+		//给listview添加头布局
+		View mHeaderView = View.inflate(mActivity, R.layout.list_item_header, null);
+		ViewUtils.inject(this,mHeaderView);//此处必须把头布局也注入
+		lvListNews.addHeaderView(mHeaderView);
 		
 		return view;
 	}
@@ -161,7 +165,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 				@Override
 				public void onPageScrollStateChanged(int arg0) {
-
+					
 				}
 			});
 
@@ -225,6 +229,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 	}
 
+	
 	class NewsAdapter extends BaseAdapter {
 
 		private BitmapUtils mBitmapUtils;
@@ -271,9 +276,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			holder.tvTitle.setText(news.title);
 			holder.tvDate.setText(news.pubdate);
 
-			mBitmapUtils.display(holder.ivIcon, news.url);
+			mBitmapUtils.display(holder.ivIcon, news.listimage);
 
-			return null;
+			return convertView;
 		}
 
 	}
