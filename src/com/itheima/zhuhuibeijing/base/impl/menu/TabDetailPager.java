@@ -3,6 +3,7 @@ package com.itheima.zhuhuibeijing.base.impl.menu;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.itheima.zhuhuibeijing.NewsDetailActivity;
 import com.itheima.zhuhuibeijing.R;
 import com.itheima.zhuhuibeijing.base.BaseMenuDetailPager;
 import com.itheima.zhuhuibeijing.domain.NewsMenu.NewsTabData;
@@ -157,6 +159,10 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				// 要将被点击的item的文字颜色改为灰色
 				TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
 				tvTitle.setTextColor(Color.GRAY);
+				
+				//跳到新闻详情页
+				Intent intent = new Intent(mActivity,NewsDetailActivity.class);
+				mActivity.startActivity(intent);
 
 			}
 
