@@ -3,11 +3,14 @@ package com.itheima.zhuhuibeijing.base.impl.menu;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.BaseAdapter;
@@ -24,6 +27,7 @@ import com.itheima.zhuhuibeijing.domain.NewsTabBean.NewsData;
 import com.itheima.zhuhuibeijing.domain.NewsTabBean.TopNews;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
+import com.itheima.zhuhuibeijing.utils.PrefUtils;
 import com.itheima.zhuhuibeijing.view.PullToRefreshListView;
 import com.itheima.zhuhuibeijing.view.PullToRefreshListView.onRefreshLister;
 import com.itheima.zhuhuibeijing.view.TopNewsViewPager;
@@ -71,7 +75,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 	private String moreUrl;
 
-	private String mMoreUrl;//下一页数据连接
+	private String mMoreUrl;// 下一页数据连接
 
 	public TabDetailPager(Activity activity, NewsTabData newsTabData) {
 		super(activity);
@@ -90,42 +94,74 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 		View view = View.inflate(mActivity, R.layout.pager_tab_detail, null);
 		ViewUtils.inject(this, view);
-		
-//		//给ListView添加头布局
-//		View mHeaderView = View.inflate(mActivity, R.layout.list_item_news, null);
-//		ViewUtils.inject(this, mHeaderView);// 此处必须将头布局也注入
-//		lvListNews.addHeaderView(mHeaderView);
-		
-		//给listview添加头布局
-		View mHeaderView = View.inflate(mActivity, R.layout.list_item_header, null);
-		ViewUtils.inject(this,mHeaderView);//此处必须把头布局也注入
+
+		// //给ListView添加头布局
+		// View mHeaderView = View.inflate(mActivity, R.layout.list_item_news,
+		// null);
+		// ViewUtils.inject(this, mHeaderView);// 此处必须将头布局也注入
+		// lvListNews.addHeaderView(mHeaderView);
+
+		// 给listview添加头布局
+		View mHeaderView = View.inflate(mActivity, R.layout.list_item_header,
+				null);
+		ViewUtils.inject(this, mHeaderView);// 此处必须把头布局也注入
 		lvListNews.addHeaderView(mHeaderView);
-		
-		//5.前端界面设置回调
+
+		// 5.前端界面设置回调
 		lvListNews.setOnRefreshLister(new onRefreshLister() {
-			
+
 			@Override
 			public void onRefresh() {
-				//刷新数据
+				// 刷新数据
 				getDataFromServer();
 			}
 
 			@Override
 			public void onLoadMore() {
-				//判断是否有下一页数据
+				// 判断是否有下一页数据
 				if (moreUrl != null) {
-					//有下一页
+					// 有下一页
 					getMoreDataFromServer();
-				}else{
-					//没有下一页
-					Toast.makeText(mActivity, "没有更多数据了", Toast.LENGTH_SHORT).show();
-					lvListNews.onRefreshComplete(false);//没有数据时，也要收起控件
+				} else {
+					// 没有下一页
+					Toast.makeText(mActivity, "没有更多数据了", Toast.LENGTH_SHORT)
+							.show();
+					lvListNews.onRefreshComplete(false);// 没有数据时，也要收起控件
 				}
-				
+
 			}
 		});
-		
-		
+
+		lvListNews.setOnItemClickListener(new OnItemClickListener() {
+
+			private NewsData news;
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				System.out.println("第" + (position - 2) + "被点击了");
+
+				int headerViewsCount = lvListNews.getHeaderViewsCount();// 获取头布局的数据
+				position = position - headerViewsCount;// 需减去头布局的占位
+
+				NewsData news = mNewsList.get(position);
+
+				String readIds = PrefUtils.getString(mActivity, "read_ids", "");
+
+				if (!readIds.contains("" + news.id)) {// 避免重复追加
+
+					readIds = readIds + news.id + ",";
+					PrefUtils.setString(mActivity, "read_ids", readIds);
+				}
+
+				// 要将被点击的item的文字颜色改为灰色
+				TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
+				tvTitle.setTextColor(Color.GRAY);
+
+			}
+
+		});
+
 		return view;
 	}
 
@@ -135,7 +171,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 		String cache = CacheUtils.getCache(mUrl, mActivity);
 		if (!TextUtils.isEmpty(cache)) {
-			processData(cache,false);
+			processData(cache, false);
 		}
 
 		getDataFromServer();
@@ -151,12 +187,12 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				String result = responseInfo.result;
 
 				// Gson
-				processData(result,false);
+				processData(result, false);
 
 				// 写缓存
 				CacheUtils.setCache(mUrl, result, mActivity);
-				
-				//收起下拉刷新控件
+
+				// 收起下拉刷新控件
 				lvListNews.onRefreshComplete(true);
 			}
 
@@ -165,13 +201,13 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				// 请求失败
 				error.printStackTrace();
 				Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
-				
-				//收起下拉刷新控件
+
+				// 收起下拉刷新控件
 				lvListNews.onRefreshComplete(false);
 			}
 		});
 	}
-	
+
 	/**
 	 * 加载下一页数据
 	 */
@@ -185,9 +221,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				String result = responseInfo.result;
 
 				// Gson
-				processData(result,true);
+				processData(result, true);
 
-				//收起下拉刷新控件
+				// 收起下拉刷新控件
 				lvListNews.onRefreshComplete(true);
 			}
 
@@ -196,8 +232,8 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				// 请求失败
 				error.printStackTrace();
 				Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
-				
-				//收起下拉刷新控件
+
+				// 收起下拉刷新控件
 				lvListNews.onRefreshComplete(false);
 			}
 		});
@@ -213,57 +249,57 @@ public class TabDetailPager extends BaseMenuDetailPager {
 		} else {
 			moreUrl = null;
 		}
-		
+
 		if (!isMore) {
-			
+
 			// 头条新闻填充数据
 			mTopnews = newsTabBean.data.topnews;
-			
+
 			if (mTopnews != null) {
 				topNewsAdapter = new TopNewsAdapter();
 				mViewPager.setAdapter(topNewsAdapter);
-				
+
 				indicator.setViewPager(mViewPager);
 				indicator.setSnap(true);// 快照方式展示
-				
+
 				// 事件要设置给indicator
 				indicator.setOnPageChangeListener(new OnPageChangeListener() {
-					
+
 					@Override
 					public void onPageSelected(int arg0) {
 						TopNews topNews = mTopnews.get(arg0);
 						tvTitle.setText(topNews.title);
 					}
-					
+
 					@Override
 					public void onPageScrolled(int arg0, float arg1, int arg2) {
-						
+
 					}
-					
+
 					@Override
 					public void onPageScrollStateChanged(int arg0) {
-						
+
 					}
 				});
-				
+
 				// 更新第一个头条新闻标题
 				tvTitle.setText(mTopnews.get(0).title);
-				
+
 				indicator.onPageSelected(0);// 默认让第一个选中(解决页面销毁后重新初始化时，Indicator仍然保留上次位置的bug)
 			}
-			
+
 			// 列表新闻
 			mNewsList = newsTabBean.data.news;
 			if (mNewsList != null) {
 				mNewsAdapter = new NewsAdapter();
 				lvListNews.setAdapter(mNewsAdapter);
 			}
-		}else{
-			//加载更多数据
+		} else {
+			// 加载更多数据
 			ArrayList<NewsData> moreNews = newsTabBean.data.news;
-			mNewsList.addAll(moreNews);//将数据追加到原来的集合中
-			
-			//刷新listview
+			mNewsList.addAll(moreNews);// 将数据追加到原来的集合中
+
+			// 刷新listview
 			mNewsAdapter.notifyDataSetChanged();
 		}
 
@@ -314,7 +350,6 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 	}
 
-	
 	class NewsAdapter extends BaseAdapter {
 
 		private BitmapUtils mBitmapUtils;
@@ -360,6 +395,14 @@ public class TabDetailPager extends BaseMenuDetailPager {
 			NewsData news = getItem(position);
 			holder.tvTitle.setText(news.title);
 			holder.tvDate.setText(news.pubdate);
+
+			// 根据本地记录来标记已读未读
+			String readIds = PrefUtils.getString(mActivity, "read_ids", "");
+			if (readIds.contains(news.id + "")) {
+				holder.tvTitle.setTextColor(Color.GRAY);
+			} else {
+				holder.tvTitle.setTextColor(Color.BLACK);
+			}
 
 			mBitmapUtils.display(holder.ivIcon, news.listimage);
 
