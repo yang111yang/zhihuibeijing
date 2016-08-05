@@ -162,6 +162,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				
 				//跳到新闻详情页
 				Intent intent = new Intent(mActivity,NewsDetailActivity.class);
+				intent.putExtra("url", news.url);
 				mActivity.startActivity(intent);
 
 			}

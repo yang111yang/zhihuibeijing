@@ -4,11 +4,15 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.TextSize;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -19,7 +23,7 @@ import android.widget.ProgressBar;
  * @author 刘建阳
  * @date 创建时间：2016-8-4 下午5:14:05
  */
-public class NewsDetailActivity extends Activity {
+public class NewsDetailActivity extends Activity implements OnClickListener {
 
 	@ViewInject(R.id.ll_control)
 	private LinearLayout llControl;
@@ -36,6 +40,8 @@ public class NewsDetailActivity extends Activity {
 	@ViewInject(R.id.pb_loading)
 	private ProgressBar pbLoading;
 	
+	private String mUrl;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,10 +54,17 @@ public class NewsDetailActivity extends Activity {
 		btnShare.setVisibility(View.VISIBLE);
 		btnMenu.setVisibility(View.INVISIBLE);
 		
-		mWebView.loadUrl("http://www.itheima.com");
+		btnBack.setOnClickListener(this);
+		btnTextSize.setOnClickListener(this);
+		btnShare.setOnClickListener(this);
+		
+		mUrl = getIntent().getStringExtra("url");
+		
+		mWebView.loadUrl(mUrl);
+//		mWebView.loadUrl("http://www.itheima.com");
 		
 		WebSettings settings = mWebView.getSettings();
-		settings.setBuiltInZoomControls(true);//显示缩放按钮
+		settings.setBuiltInZoomControls(true);//显示缩放按钮(wap网页不支持)
 		settings.setUseWideViewPort(true);//支持双击缩放
 		settings.setJavaScriptEnabled(true);//支持js功能
 		
@@ -97,5 +110,86 @@ public class NewsDetailActivity extends Activity {
 			}
 			
 		});
+	
+	
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_back:
+			finish();
+			break;
+		case R.id.btn_textsize:
+			//修改网页字体的大小
+			showChooseDialog();
+			break;
+		case R.id.btn_share:
+			
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+	
+	private int mTempWhich;//记录临时选择的字体的大小(点击确定之前)
+	private int mCurrentWhich = 2;//记录当前选择的字体的大小(点击确定之后)
+
+	/**
+	 * 展示选择字体大小的弹窗
+	 */
+	private void showChooseDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("字体设置");
+		String[] items = new String[]{"超大号字体","大号字体","正常字体","小号字体","超小号字体"};
+		builder.setSingleChoiceItems(items, mCurrentWhich, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				mTempWhich = which;
+			}
+		});
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				//根据选择的字体来修改网页文字的大小
+				
+				WebSettings settings = mWebView.getSettings();
+				
+				switch (mTempWhich) {
+				case 0:
+					//超大字体
+					settings.setTextSize(TextSize.LARGEST);
+//					settings.setTextZoom(textZoom);
+					break;
+				case 1:
+					//大号字体
+					settings.setTextSize(TextSize.LARGER);
+					break;
+				case 2:
+					//正常字体
+					settings.setTextSize(TextSize.NORMAL);
+					break;
+				case 3:
+					//小号字体
+					settings.setTextSize(TextSize.SMALLER);
+					break;
+				case 4:
+					//超小号字体
+					settings.setTextSize(TextSize.SMALLEST);
+					break;
+
+				default:
+					break;
+				}
+				
+				mCurrentWhich = mTempWhich;
+			}
+		});
+		builder.setNegativeButton("取消", null);
+		builder.show();
 	}
 }
