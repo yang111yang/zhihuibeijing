@@ -5,17 +5,20 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +77,8 @@ public class TabDetailPager extends BaseMenuDetailPager {
 	private ArrayList<NewsData> mNewsList;
 
 	private NewsAdapter mNewsAdapter;
+
+	private Handler mHandler;
 
 	private String moreUrl;
 
@@ -159,9 +164,9 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				// 要将被点击的item的文字颜色改为灰色
 				TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
 				tvTitle.setTextColor(Color.GRAY);
-				
-				//跳到新闻详情页
-				Intent intent = new Intent(mActivity,NewsDetailActivity.class);
+
+				// 跳到新闻详情页
+				Intent intent = new Intent(mActivity, NewsDetailActivity.class);
 				intent.putExtra("url", news.url);
 				mActivity.startActivity(intent);
 
@@ -301,6 +306,49 @@ public class TabDetailPager extends BaseMenuDetailPager {
 				mNewsAdapter = new NewsAdapter();
 				lvListNews.setAdapter(mNewsAdapter);
 			}
+
+			if (mHandler == null) {
+				mHandler = new Handler() {
+					@Override
+					public void handleMessage(Message msg) {
+						int currentItem = mViewPager.getCurrentItem();
+						currentItem++;
+						if (currentItem > mTopnews.size() - 1) {
+							currentItem = 0;
+						}
+						mViewPager.setCurrentItem(currentItem);
+						mHandler.sendEmptyMessageDelayed(0, 3000);// 继续发送延时三秒的消息，形成内循环
+					}
+				};
+				mHandler.sendEmptyMessageDelayed(0, 3000);
+				
+				mViewPager.setOnTouchListener(new OnTouchListener() {
+					
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						switch (event.getAction()) {
+						case MotionEvent.ACTION_DOWN:
+							//停止广告轮播
+							//删除handler的所有消息
+							mHandler.removeCallbacksAndMessages(null);
+							break;
+						case MotionEvent.ACTION_CANCEL://取消事件
+							//启动广告
+							mHandler.sendEmptyMessageDelayed(0, 3000);
+							break;
+						case MotionEvent.ACTION_UP:
+							//启动广告
+							mHandler.sendEmptyMessageDelayed(0, 3000);
+							break;
+
+						default:
+							break;
+						}
+						return false;
+					}
+				});
+			}
+
 		} else {
 			// 加载更多数据
 			ArrayList<NewsData> moreNews = newsTabBean.data.news;
