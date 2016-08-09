@@ -65,7 +65,7 @@ public class NewsCenterPager extends BasePager {
 		String cache = CacheUtils.getCache(GlobalConstants.CATEGORY_URL,
 				mActivity);
 		if (!TextUtils.isEmpty(cache)) {
-			System.out.println("发现缓存了...");
+//			System.out.println("发现缓存了...");
 			processData(cache);
 		} 
 
@@ -87,7 +87,7 @@ public class NewsCenterPager extends BasePager {
 					public void onSuccess(ResponseInfo<String> responseInfo) {
 						// 请求成功
 						String result = responseInfo.result;
-						System.out.println("服务器返回的结果：" + result);
+//						System.out.println("服务器返回的结果：" + result);
 
 						// Gson
 						processData(result);
@@ -114,7 +114,7 @@ public class NewsCenterPager extends BasePager {
 		// Gson：Google Json
 		Gson gson = new Gson();
 		mNewsData = gson.fromJson(json, NewsMenu.class);
-		System.out.println("解析结果：" + mNewsData);
+//		System.out.println("解析结果：" + mNewsData);
 		
 		//获取侧边栏对象
 		MainActivity mainUI = (MainActivity) mActivity;
@@ -127,7 +127,7 @@ public class NewsCenterPager extends BasePager {
 		mMenuDetailPagers = new ArrayList<BaseMenuDetailPager>();
 		mMenuDetailPagers.add(new NewsMenuDetailPager(mActivity, mNewsData.data.get(0).children));
 		mMenuDetailPagers.add(new TopicMenuDetailPager(mActivity));
-		mMenuDetailPagers.add(new PhotosMenuDetailPager(mActivity));
+		mMenuDetailPagers.add(new PhotosMenuDetailPager(mActivity,btnPhoto));
 		mMenuDetailPagers.add(new InteractMenuDetailPager(mActivity));
 		
 		setCurrentDetailPager(0);//将新闻菜单详情页设置为默认页面
@@ -151,6 +151,13 @@ public class NewsCenterPager extends BasePager {
 		
 		//更新标题
 		tvTitle.setText(mNewsData.data.get(position).title);
+		
+		//如果是组图页面，需要切换按钮
+		if (pager instanceof PhotosMenuDetailPager) {
+			btnPhoto.setVisibility(View.VISIBLE);
+		}else{
+			btnPhoto.setVisibility(View.GONE);
+		}
 	}
 	
 	
