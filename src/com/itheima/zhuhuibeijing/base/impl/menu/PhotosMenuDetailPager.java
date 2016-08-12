@@ -22,6 +22,7 @@ import com.itheima.zhuhuibeijing.domain.PhotosBean;
 import com.itheima.zhuhuibeijing.domain.PhotosBean.PhotoNews;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
+import com.itheima.zhuhuibeijing.utils.MyBitmapUtils;
 import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.ViewUtils;
@@ -117,12 +118,14 @@ public class PhotosMenuDetailPager extends BaseMenuDetailPager implements OnClic
 
 		
 
-		private BitmapUtils mBitmapUtils;
+//		private BitmapUtils mBitmapUtils;
+		private MyBitmapUtils mBitmapUtils;
 
 		public PhotoAdapter() {
-			mBitmapUtils = new BitmapUtils(mActivity);
+			mBitmapUtils = new MyBitmapUtils();
+//			mBitmapUtils = new BitmapUtils(mActivity);
 			//设置默认显示图片
-			mBitmapUtils.configDefaultLoadingImage(R.drawable.pic_item_list_default);
+//			mBitmapUtils.configDefaultLoadingImage(R.drawable.pic_item_list_default);
 		}
 
 		@Override
