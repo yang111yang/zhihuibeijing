@@ -1,5 +1,7 @@
 package com.itheima.zhuhuibeijing.utils;
 
+import com.itheima.zhuhuibeijing.R;
+
 import android.widget.ImageView;
 /**
  * 自定义三级缓存图片加载工具
@@ -17,6 +19,9 @@ public class MyBitmapUtils {
 	}
 
 	public void display(ImageView imageView, String url) {
+		//设置默认图片
+		imageView.setImageResource(R.drawable.pic_item_list_default);
+		
 		//先从内存里面加载图片，速度最快，不浪费流量
 		//其次从本地（sdcard）中加载图片，速度快，不浪费流量
 		//最后从网络下载图片，速度慢，浪费流量	
