@@ -18,6 +18,12 @@ import android.widget.ImageView;
  * 时间：2016-8-12下午2:45:37
  */
 public class NetCacheUtils {
+	
+	private LocalCacheUtils mLocalCacheUtils;
+
+	public NetCacheUtils(LocalCacheUtils localCacheUtils) {
+		this.mLocalCacheUtils = localCacheUtils;
+	}
 
 	public void getBitmapFromNet(ImageView imageView, String url) {
 		//AsyncTask 异步封装的工具，可以实现异步请求和主界面更新（对线程池+handler的封装）
@@ -78,6 +84,10 @@ public class NetCacheUtils {
 				if (url.equals(this.url)) {//判断图片绑定的url是否就是当前bitmap的url，如果是，说明图片正确
 					imageView.setImageBitmap(result);
 					System.out.println("从网络下载图片啦...");
+					
+					//写本地缓存
+					mLocalCacheUtils.setLocalCache(url, result);
+					
 				}
 			}
 			
