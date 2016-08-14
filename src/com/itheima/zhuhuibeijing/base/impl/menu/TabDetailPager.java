@@ -32,6 +32,7 @@ import com.itheima.zhuhuibeijing.domain.NewsTabBean.NewsData;
 import com.itheima.zhuhuibeijing.domain.NewsTabBean.TopNews;
 import com.itheima.zhuhuibeijing.global.GlobalConstants;
 import com.itheima.zhuhuibeijing.utils.CacheUtils;
+import com.itheima.zhuhuibeijing.utils.MyBitmapUtils;
 import com.itheima.zhuhuibeijing.utils.PrefUtils;
 import com.itheima.zhuhuibeijing.view.PullToRefreshListView;
 import com.itheima.zhuhuibeijing.view.PullToRefreshListView.onRefreshLister;
@@ -363,6 +364,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 	// 头条新闻适配器
 	class TopNewsAdapter extends PagerAdapter {
 
+//		private MyBitmapUtils mBitmapUtils;
 		private BitmapUtils mBitmapUtils;
 
 		public TopNewsAdapter() {
@@ -370,6 +372,7 @@ public class TabDetailPager extends BaseMenuDetailPager {
 
 			mBitmapUtils
 					.configDefaultLoadingImage(R.drawable.topnews_item_default);
+//			mBitmapUtils = new MyBitmapUtils();
 		}
 
 		@Override
