@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.itheima.zhuhuibeijing.utils.DensityUtils;
 import com.itheima.zhuhuibeijing.utils.PrefUtils;
 /**
  * 新手引导界面
@@ -151,7 +152,7 @@ public class GuideActivity extends Activity {
 
 			if (i > 0) {
 				// 从第二个点开始设置左边距
-				params.leftMargin = 10;
+				params.leftMargin = DensityUtils.dip2px(10, this);
 			}
 
 			point.setLayoutParams(params);// 设置布局参数
