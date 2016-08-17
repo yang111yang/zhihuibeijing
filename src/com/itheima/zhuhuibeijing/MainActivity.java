@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
 import android.view.WindowManager;
 
+import cn.jpush.android.api.JPushInterface;
+
 import com.itheima.zhuhuibeijing.fragment.ContentFragment;
 import com.itheima.zhuhuibeijing.fragment.LeftMenuFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -34,7 +36,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
 		SlidingMenu slidingMenu = getSlidingMenu();
 		slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-//		slidingMenu.setBehindOffset(200);
+		// slidingMenu.setBehindOffset(200);
 
 		WindowManager wm = getWindowManager();
 		int width = wm.getDefaultDisplay().getWidth();
@@ -73,6 +75,18 @@ public class MainActivity extends SlidingFragmentActivity {
 		ContentFragment fragment = (ContentFragment) fm
 				.findFragmentByTag(TAG_CONTENT);
 		return fragment;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		JPushInterface.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		JPushInterface.onPause(this);
 	}
 
 }

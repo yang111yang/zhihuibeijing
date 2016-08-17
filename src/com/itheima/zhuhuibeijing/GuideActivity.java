@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import cn.jpush.android.api.JPushInterface;
 
 import com.itheima.zhuhuibeijing.utils.DensityUtils;
 import com.itheima.zhuhuibeijing.utils.PrefUtils;
@@ -189,5 +190,19 @@ public class GuideActivity extends Activity {
 		}
 
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		JPushInterface.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		JPushInterface.onPause(this);
+	}
+
+	
 	
 }
